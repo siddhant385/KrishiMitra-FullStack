@@ -1,20 +1,22 @@
-import './App.css'
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
-import {hiIN} from '@clerk/localizations'
+// import './App.css'
+// import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react'
+// import {hiIN} from '@clerk/localizations'
+// import Layout from './components/Layout';
+// import ProtectedRoute from './components/ProtectedRoute'; // Ise abhi banayenge
+// import Header from './components/Header/Header';
+// import Footer from './components/Footer/Footer';
 
-function App() {
 
-  return (
-    <header>
-      <SignedOut localization={hiIN}>
-        <SignInButton localization={hiIN}/>
-      </SignedOut>
-      <SignedIn localization={hiIN}>
-        <UserButton localization={hiIN} />
-      </SignedIn>
-    </header>
 
-  )
-}
 
-export default App
+// function App() {
+
+//   return (
+//     <>
+//     <Header/>
+//     <Footer/>
+//     </>
+//   )
+// }
+
+// export default App
