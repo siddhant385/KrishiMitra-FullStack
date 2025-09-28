@@ -4,16 +4,18 @@ import './index.css'
 // import App from './App.jsx'
 
 import { ClerkProvider } from '@clerk/clerk-react'
-import {hiIN} from '@clerk/localizations'
-import {Routes,Route, createBrowserRouter, RouterProvider,createRoutesFromElements } from 'react-router-dom' 
+import { hiIN } from '@clerk/localizations'
+import { Routes, Route, createBrowserRouter, RouterProvider, createRoutesFromElements } from 'react-router-dom'
 import Layout from './Layout'
 import ProtectedRoute from './ProtectedLayout'
 import Home from './components/Home/Home'
+import ImageScanner from "./components/ImageScanner/ImageScanner";
 import Dashboard from './components/Dashboard/Dashboard'
 import Trade from './components/Trade/Trade'
 import Chatbot from './components/Chatbot/Chatbot'
 import AccessDenied from './components/AccessDenied/AccessDenied'
 import { LanguageProvider } from "./contexts/LanguageContext";
+
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -38,14 +40,15 @@ if (!PUBLISHABLE_KEY) {
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route index element={<Home />} />
-      <Route path="access-denied" element={<AccessDenied/>}/>
-      
+      <Route path="access-denied" element={<AccessDenied />} />
+
       {/* Protected Route */}
-      <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/" element={<ProtectedRoute />}>
+        <Route index element={<Dashboard />} />
+        {/* <Route path="/dashboard" element={<Dashboard />} /> */}
         <Route path="/trade" element={<Trade />} />
         <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/camera" element={<ImageScanner />} />
       </Route>
     </Route>
   )
@@ -55,10 +58,10 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ClerkProvider localization={hiIN} publishableKey={PUBLISHABLE_KEY}>
-    <LanguageProvider>
-       <RouterProvider router={router}/>
-    </LanguageProvider>
-   </ClerkProvider>
-    
+      <LanguageProvider>
+        <RouterProvider router={router} />
+      </LanguageProvider>
+    </ClerkProvider>
+
   </StrictMode>,
 )
