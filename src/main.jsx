@@ -10,8 +10,10 @@ import Layout from './Layout'
 import ProtectedRoute from './ProtectedLayout'
 import Home from './components/Home/Home'
 import Dashboard from './components/Dashboard/Dashboard'
+import Trade from './components/Trade/Trade'
+import Chatbot from './components/Chatbot/Chatbot'
 import AccessDenied from './components/AccessDenied/AccessDenied'
-
+import { LanguageProvider } from "./contexts/LanguageContext";
 
 // Import your Publishable Key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -42,6 +44,8 @@ const router = createBrowserRouter(
       {/* Protected Route */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/trade" element={<Trade />} />
+        <Route path="/chatbot" element={<Chatbot />} />
       </Route>
     </Route>
   )
@@ -51,8 +55,10 @@ const router = createBrowserRouter(
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ClerkProvider localization={hiIN} publishableKey={PUBLISHABLE_KEY}>
-    <RouterProvider router={router}/>
-    </ClerkProvider>
+    <LanguageProvider>
+       <RouterProvider router={router}/>
+    </LanguageProvider>
+   </ClerkProvider>
     
   </StrictMode>,
 )

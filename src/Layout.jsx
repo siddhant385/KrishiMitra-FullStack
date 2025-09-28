@@ -8,7 +8,10 @@ function Layout() {
 		<>
 		<Header/>
 		<Outlet />
+		<div className='bottom-0 text-black'>
+			
 		<Footer/>
+		</div>
 		</>
 	)
 }
