@@ -8,7 +8,9 @@ const Navbar = ({  }) => {
 //   const [language, changeLanguage] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-const [languageMenu,setLanguageMenu]=useState(false);
+  const [languageMenu,setLanguageMenu]=useState(false);
+    // const [activeLang, setActiveLang] = useState(language); // selected language
+
 
    const handleLanguageSelect = (langCode) => {
      changeLanguage(langCode);
@@ -27,7 +29,7 @@ const [languageMenu,setLanguageMenu]=useState(false);
       </div>
 
       <div className="flex flex-row gap-3 sm:gap-4 items-center relative">
-        <Globe className="w-5 h-5 sm:w-6 sm:h-6" onClick={() => false}/>
+        <Globe className="w-5 h-5 sm:w-6 sm:h-6" onClick={() => languageMenu?setLanguageMenu(false):setLanguageMenu(true)}/>
             <div className="flex items-center justify-center py-8 px-4">
         <SignedOut>
           <SignInButton />
@@ -58,7 +60,7 @@ const [languageMenu,setLanguageMenu]=useState(false);
 
         <Menu className="w-5 h-5 sm:w-6 sm:h-6" onClick={() => setShowMenu(!showMenu)}/>
 
-       {language && (
+       {languageMenu && (
   <div
     className="
       absolute top-12 right-0 sm:right-0
@@ -71,30 +73,30 @@ const [languageMenu,setLanguageMenu]=useState(false);
       <h3 className="text-lg font-bold text-green-700">Language</h3>
       
       <X
-        onClick={() => false}
+        onClick={() => setLanguageMenu(false)}
         className="w-5 h-5 cursor-pointer"
       />
 
     </div>
 
     <div className="flex cursor-pointer flex-col gap-1 max-h-60 overflow-y-auto ">
-      <div  onClick={()=>handleLanguageSelect("hi-IN")}className="flex flex-row items-start gap-2 w-full hover:bg-green-500 hover:text-white rounded-xl p-2 ">
+      <div  onClick={()=>handleLanguageSelect("hi-IN")}className={`flex flex-row items-start gap-2 w-full ${language === "hi-IN" ? "bg-green-500 text-white":"hover:bg-green-500 hover:text-white"} rounded-xl p-2 `}>
           <div className='text-xs font-serif mt-1 flex '>IN</div>
           <div>हिंदी</div>
       </div>
-      <div  onClick={() => handleLanguageSelect("en-US")} className="flex flex-row items-start gap-2 w-full hover:bg-green-500 hover:text-white rounded-xl p-2 ">
+      <div  onClick={() => handleLanguageSelect("en-US")} className={`flex flex-row items-start gap-2 w-full ${language === "en-US" ? "bg-green-500 text-white":"hover:bg-green-500 hover:text-white"} rounded-xl p-2 `}>
           <div className='text-xs font-serif mt-1 flex '>US</div>
           <div>English</div>
       </div>
-      <div onClick={() => handleLanguageSelect("mr-IN")} className="flex flex-row items-start gap-2 w-full hover:bg-green-500 hover:text-white rounded-xl p-2 ">
+      <div onClick={() => handleLanguageSelect("mr-IN")} className={`flex flex-row items-start gap-2 w-full ${language === "mr-IN" ? "bg-green-500 text-white":"hover:bg-green-500 hover:text-white"} rounded-xl p-2 `}>
           <div className='text-xs font-serif mt-1 flex '>IN</div>
           <div>मराठी</div>
       </div>
-      <div onClick={() => handleLanguageSelect("bn-IN")} className="flex flex-row items-start gap-2 w-full hover:bg-green-500 hover:text-white rounded-xl p-2 ">
+      <div onClick={() => handleLanguageSelect("bn-IN")} className={`flex flex-row items-start gap-2 w-full ${language === "bn-IN" ? "bg-green-500 text-white":"hover:bg-green-500 hover:text-white"} rounded-xl p-2 `}>
           <div className='text-xs font-serif mt-1 flex '>IN</div>
           <div>বাংলা</div>
       </div>
-      <div onClick={() => handleLanguageSelect("kn-IN")} className="flex flex-row items-start gap-2 w-full hover:bg-green-500 hover:text-white rounded-xl p-2 ">
+      <div onClick={() => handleLanguageSelect("kn-IN")} className={`flex flex-row items-start gap-2 w-full ${language === "kn-IN" ? "bg-green-500 text-white":"hover:bg-green-500 hover:text-white"} rounded-xl p-2 `}>
           <div className='text-xs font-serif mt-1 flex '>IN</div>
           <div>ಕನ್ನಡ</div>
       </div>
