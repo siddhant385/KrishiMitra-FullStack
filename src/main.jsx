@@ -15,6 +15,7 @@ import Trade from './components/Trade/Trade'
 import Chatbot from './components/Chatbot/Chatbot'
 import AccessDenied from './components/AccessDenied/AccessDenied'
 import { LanguageProvider } from "./contexts/LanguageContext";
+import Test from './components/Test/Test'
 
 
 // Import your Publishable Key
@@ -41,6 +42,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="access-denied" element={<AccessDenied />} />
+      <Route path="test" element={<Test />} />
 
       {/* Protected Route */}
       <Route path="/" element={<ProtectedRoute />}>

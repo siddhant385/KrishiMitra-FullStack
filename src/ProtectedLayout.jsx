@@ -1,23 +1,45 @@
-// src/ProtectedRoute.jsx
-import React from "react";
-import { Navigate, useLocation, Outlet } from "react-router-dom";
-// import { useAuth } from "@clerk/clerk-react";
-import { RedirectToSignIn, useUser } from "@clerk/clerk-react";
-
+import React, { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import { useUser, RedirectToSignIn } from "@clerk/clerk-react";
+import { useSupabaseAuth } from "@/utils/supabase";
 
 const ProtectedRoute = () => {
-  const { isSignedIn, isLoaded } = useUser();
-  const location = useLocation();
+  const { isSignedIn, isLoaded, user } = useUser();
+  const { createClientWithToken } = useSupabaseAuth();
+  const [loading, setLoading] = useState(true);
 
-  if (!isLoaded) {
-    // Clerk abhi load ho raha hai → koi spinner ya blank return kar do
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    if (!isLoaded || !isSignedIn) return;
 
-  if (!isSignedIn) {
+    const ensureUser = async () => {
+      const supabase = await createClientWithToken(); // ✅ await here
+      // console.log(user.id)
 
-    return <RedirectToSignIn/>;
-  }
+      const { data } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", user.id)
+        .single();
+
+      if (!data) {
+        await supabase.from("users").insert({
+          id: user.id,
+          name: user.fullName,
+          telegram_bot_id: "",
+          location: "",
+          phone: user.phoneNumber || "",
+        });
+      }
+
+      setLoading(false);
+    };
+
+    ensureUser();
+  }, [isLoaded, isSignedIn, user]);
+
+  if (!isLoaded || !isSignedIn) return <RedirectToSignIn />;
+
+  if (loading) return <div>Loading...</div>;
 
   return <Outlet />;
 };

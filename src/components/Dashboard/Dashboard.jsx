@@ -1,15 +1,54 @@
 import React from 'react'
 import './Dashboard-styles.css'
+import { useUser } from "@clerk/clerk-react";
+import { useEffect,useState } from 'react';
+import { useSupabaseAuth } from "@/utils/supabase";
+
+
 
 const Dashboard = () => {
+	const [userData,setUserData] = useState(null)
+	const [loading,setLoading] = useState(true);
+	  
+
+
+	// User Contexts
+	const { createClientWithToken } = useSupabaseAuth();
+	const { user,isLoaded,isSignedIn } = useUser();
+
+
+	useEffect(()=> {
+		if (!isLoaded || !isSignedIn) return;
+
+
+		const supabaseUser = async() => {
+			setLoading(true);
+			const supabase = await createClientWithToken(); // ✅ await here
+			const { data } = await supabase
+	        .from("users")
+	        .select("*")
+	        .eq("id", user.id)
+	        .single();
+	        // console.log(data)
+	        setUserData(data)
+	        // console.log(userData)
+	        setLoading(false);
+
+	    }
+
+	    supabaseUser();
+
+
+	},[isSignedIn, user])
+
 	return (
 		<>
 			<div className="app-container">
 
 				<main className="app-main">
 					<div className="welcome-section">
-						<img src="https://t3.ftcdn.net/jpg/13/38/51/12/360_F_1338511220_MeoFlTMRPoovcPmtmSn0cGR2zeU4yaJFnu.jpg?auto=format&fit=crop&w=230&h=230&q=80" alt="किसान अवतार" className="user-avatar" loading="lazy" />
-						<h1 className="welcome-title">नमस्ते, श्याम जी !</h1>
+						<img src={user.imageUrl} alt="किसान अवतार" className="user-avatar" loading="lazy" />
+						<h1 className="welcome-title">नमस्ते, {loading ? "User":userData?.name || "User"} !</h1>
 						<p className="welcome-subtitle">आज आपकी फसल के लिए क्या योजना है?</p>
 					</div>
 
