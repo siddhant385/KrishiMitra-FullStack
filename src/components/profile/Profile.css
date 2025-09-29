@@ -1,0 +1,146 @@
+/* Profile.css — plain boxes + colors, no images/icons required */
+
+:root{
+  --bg: #f7fafc;
+  --card: #ffffff;
+  --muted: #6b7280;
+  --accent: #10b981;
+  --accent-2: #eef2ff;
+  --radius: 14px;
+  --gap: 12px;
+  font-family: "Noto Sans", Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+.pm-page{
+  max-width: 420px;
+  margin: 18px auto;
+  padding: 14px;
+  background: transparent;
+  color: #0f172a;
+}
+
+/* Card base */
+.pm-card{
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 14px;
+  box-shadow: 0 1px 0 rgba(2,6,23,0.04);
+  margin-bottom: 12px;
+  border: 1px solid #eef2f6;
+}
+
+/* Header */
+.pm-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  padding: 12px;
+  background: linear-gradient(90deg, #ecfdf5 0%, #f0f9ff 100%);
+  border: 1px solid rgba(16,185,129,0.12);
+}
+
+.pm-header-left{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  min-width: 0;
+}
+
+/* Avatar placeholder (no image) */
+.pm-avatar-placeholder{
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.pm-avatar-circle{
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: linear-gradient(180deg,#d1fae5,#ecfccb);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  color:#065f46;
+  box-shadow: 0 2px 8px rgba(2,6,23,0.06);
+}
+
+/* Meta */
+.pm-meta{ min-width:0; }
+.pm-name-row{ display:flex; align-items:center; gap:8px; }
+.pm-name{ margin:0; font-size:16px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.pm-badge{ background:#ecfdf5; color:#065f46; padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px; }
+
+.pm-location{ color:var(--muted); font-size:13px; margin-top:6px; }
+.pm-phone{ color:var(--muted); font-size:13px; margin-top:6px; }
+
+/* Edit button */
+.pm-header-right{ display:flex; align-items:flex-start; }
+.pm-edit-btn{
+  background: transparent;
+  border: 1px solid #e6eef7;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor:pointer;
+  font-weight:600;
+}
+
+/* Details */
+.pm-card-title{ margin:0 0 10px 0; font-weight:700; font-size:15px; }
+.pm-details-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; }
+.pm-detail{ padding:12px; border-radius:10px; background:#fbfdff; border:1px solid #f3f6f9; }
+.pm-detail .label{ color:var(--muted); font-size:12px; margin-bottom:8px; }
+.pm-detail .value{ font-weight:700; font-size:14px; }
+.pm-input{ width:100%; padding:8px; border-radius:8px; border:1px solid #e6eef7; }
+
+/* Stats grid */
+.pm-stats{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-top:6px; }
+.pm-stat-card{ text-align:center; padding:14px; border-radius:10px; background: #fff; border:1px solid #f3f6f9; }
+.pm-stat-value{ font-weight:800; font-size:18px; margin-bottom:6px; }
+.pm-stat-label{ color:var(--muted); font-size:13px; }
+
+/* Achievements */
+.pm-ach-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:10px; margin-top:6px; }
+.pm-ach-item{ padding:12px; border-radius:10px; border:1px solid #eef2f7; background:#fff; display:flex; align-items:flex-start; }
+.pm-ach-item.earned{ background: linear-gradient(90deg,#fffbe6,#fffbeb); border-color:#fde68a; }
+.ach-title{ font-weight:700; font-size:14px; }
+.ach-desc{ color:var(--muted); font-size:12px; margin-top:6px; }
+
+/* Menu */
+.pm-menu .pm-menu-row{ display:flex; justify-content:space-between; align-items:center; padding:12px 8px; border-top:1px solid #f3f4f6; cursor:pointer; }
+.pm-menu .pm-menu-row:first-child{ border-top:none; font-weight:700; }
+.pm-menu .pm-menu-row div:last-child{ color:#c7d2fe; font-weight:700; }
+
+/* Footer */
+.pm-footer{ text-align:center; color:var(--muted); font-size:12px; margin-top:10px; display:flex; flex-direction:column; gap:4px; align-items:center; }
+
+/* small responsive */
+@media (min-width:600px){
+  .pm-page{ max-width:720px; }
+}
+.icon-inline { vertical-align: middle; display: inline-block; }
+.icon-blue { color: #2563eb; }      /* blue */
+.icon-green { color: #10b981; }     /* green */
+.icon-orange { color: #f97316; }    /* orange */
+.icon-purple { color: #7c3aed; }    /* purple */
+
+/* small spacing on icon inside buttons */
+.pm-edit-btn svg { vertical-align: middle; margin-right: 6px; }
+/* Emoji inside achievement card */
+.ach-emoji{
+  font-size: 22px;           /* बड़ा, स्पष्ट emoji */
+  margin-right: 10px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* adjust achievement item layout to include emoji */
+.pm-ach-item{ display:flex; gap:12px; align-items:center; padding:12px; border-radius:10px; border:1px solid #eef2ff; background:#fff; }
+.pm-ach-item.locked{ opacity:0.55; filter:grayscale(0.6); }
+.pm-ach-item.earned{ background: linear-gradient(90deg,#fffbe6,#fffbeb); border-color:#fde68a; }
