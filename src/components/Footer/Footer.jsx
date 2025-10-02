@@ -4,7 +4,7 @@ import { House, Camera, TrendingUp, MessageSquare, User } from 'lucide-react';
 
 const Footer = () => {
 	return (
-		<div className="bg-white h-14 sm:h-16 fixed bottom-0 w-full shadow-lg z-50 flex justify-center">
+		<div className="bg-white h-14 sm:h-16 fixed bottom-0 w-full shadow-lg z-0 flex justify-center">
       {/* Inner wrapper with fixed max width */}
       <div className="flex items-center justify-between w-full max-w-md px-6 sm:px-10">
         <NavLink to="/" className="flex flex-col items-center justify-center text-xs sm:text-sm  hover:bg-green-200 p-1 rounded-2xl hover:text-green-900">

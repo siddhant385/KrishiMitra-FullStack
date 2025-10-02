@@ -126,7 +126,7 @@ const Chatbot = () => {
       </div>
 
       {/* Input Box + Mic + Send */}
-      <div className="fixed bottom-14 sm:bottom-18 left-1/2 transform -translate-x-1/2 bg-white rounded-3xl shadow-lg w-[95%] sm:w-[90%] md:w-[70%] lg:w-[50%] px-4 py-2 flex flex-row gap-3 z-50 items-center">
+      <div className="fixed bottom-16 sm:bottom-18 left-1/2 transform -translate-x-1/2 bg-white rounded-3xl shadow-lg w-[95%] sm:w-[90%] md:w-[70%] lg:w-[50%] px-4 py-2 flex flex-row gap-3 z-0 items-center">
         <Mic className={`cursor-pointer w-5 h-5 sm:w-6 sm:h-6 ${mic ? "text-green-500" : "text-gray-600"}`} onClick={micHandler} />
 
         <textarea
