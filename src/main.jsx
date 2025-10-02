@@ -17,6 +17,7 @@ import AccessDenied from './components/AccessDenied/AccessDenied'
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Test from './components/Test/Test'
 import Profile from './components/Profile/Profile'
+import FarmerErrorPage from './components/Error404/Error404'
 
 
 // Import your Publishable Key
@@ -43,7 +44,9 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="access-denied" element={<AccessDenied />} />
+
       <Route path="test" element={<Test />} />
+      <Route path="*" element={<FarmerErrorPage />} />
 
       {/* Protected Route */}
       <Route path="/" element={<ProtectedRoute />}>

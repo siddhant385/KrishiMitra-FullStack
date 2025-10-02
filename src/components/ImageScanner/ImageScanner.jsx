@@ -1,15 +1,54 @@
 
 import { Camera, Upload, Repeat, Clock, ChevronRight, Zap } from 'lucide-react';
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback,useEffect } from 'react';
 import Webcam from 'react-webcam';
+import { useAuth } from "@clerk/clerk-react";
+import { detectImage,getHistory } from "../../api/image"
 
 const ImageScanner = () => {
 
+
     const webcamRef = useRef(null);
+    const { getToken,userId } = useAuth();
+    const [scanHistory, setScanHistory] = useState([]);
     const [imgSrc, setImgSrc] = useState(null);
     const [image_captured, setImage_captured] = useState(null); // New variable to store captured image
     const [mirrored, setMirrored] = useState(false);
     const [facingMode, setFacingMode] = useState("environment"); // Track camera facing mode
+
+
+    const timeAgo = (dateString) => {
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+
+      const diffSec = Math.floor(diffMs / 1000);
+      const diffMin = Math.floor(diffSec / 60);
+      const diffHrs = Math.floor(diffMin / 60);
+      const diffDays = Math.floor(diffHrs / 24);
+
+      if (diffSec < 60) return `${diffSec} सेकंड पहले`;
+      if (diffMin < 60) return `${diffMin} मिनट पहले`;
+      if (diffHrs < 24) return `${diffHrs} घंटे पहले`;
+      return `${diffDays} दिन पहले`;
+    };
+
+
+
+    useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        const token = await getToken();
+        const history = await getHistory(userId, token);
+        setScanHistory(history.data || []);
+        console.log(history.data)
+      } catch (err) {
+        console.error("History fetch error:", err);
+      }
+    };
+    fetchHistory();
+      }, [getToken, userId]);
+
 
     // Video constraints with dynamic facing mode
     const videoConstraints = {
@@ -23,12 +62,37 @@ const ImageScanner = () => {
         setFacingMode(prevMode => prevMode === "environment" ? "user" : "environment");
     };
 
+    const dataURLtoFile = (dataurl, filename) => {
+        let arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]),
+            n = bstr.length,
+            u8arr = new Uint8Array(n);
+
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new File([u8arr], filename, {type:mime});
+    };
+
     const capture = useCallback(() => {
         const imageSrc = webcamRef.current.getScreenshot();
         setImgSrc(imageSrc);
-        setImage_captured(imageSrc); // Save to image_captured variable
-        console.log('Image captured and saved to image_captured variable:', imageSrc);
+        const file = dataURLtoFile(imageSrc, "capture.jpg"); // convert base64 to file
+        setImage_captured(file);
+        setSelectedImage(file); // yahi file backend ke liye
+        console.log('Image captured file:', file);
     }, [webcamRef]);
+
+
+
+
+    // const capture = useCallback(() => {
+    //     const imageSrc = webcamRef.current.getScreenshot();
+    //     setImgSrc(imageSrc);
+    //     setImage_captured(imageSrc); // Save to image_captured variable
+    //     console.log('Image captured and saved to image_captured variable:', imageSrc);
+    // }, [webcamRef]);
 
     const retake = () => {
         setImgSrc(null);
@@ -44,29 +108,55 @@ const ImageScanner = () => {
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                setSelectedImage(e.target.result);
-                simulateScan();
-            };
-            reader.readAsDataURL(file);
+            setSelectedImage(file); // <-- yaha file rakhna hai, base64 nahi
+            simulateScan(file);     // pass file directly
         }
     };
 
-    const simulateScan = () => {
-        setIsScanning(true);
-        setScanResult(null);
 
-        setTimeout(() => {
+    const simulateScan = async (file = selectedImage) => {
+        if (!(file instanceof File)) {
+            console.error("❌ Not a File object:", file);
+            return;
+          }
+        setIsScanning(true);
+        try {
+            const token = await getToken()
+            const response = {response_result: await detectImage(file,token),detected_at: new Date()};
+            console.log("Scan result:", response);
+            setScanResult(response.response_result);
+            setImgSrc(null);
+            setSelectedImage(null);
+            setImage_captured(null);
+            // 👇 new result ko local state ke top pe add karo
+          setScanHistory((prev) => [
+            { id: Date.now().toString(), ...response }, // temp id
+            ...prev,
+          ]);
+
+        } catch (error) {
+            console.error("Error during scan:", error);
+            console.error("Error status:", error.response.status);
+            console.error("Error detail:", error.response.data.detail);
+
+        } finally {
             setIsScanning(false);
-            setScanResult({
-                disease: "टमाटर पत्ता",
-                confidence: "85%",
-                status: "प्रारंभिक छत्रा रोग",
-                recommendations: "2 घंटे पहले"
-            });
-        }, 2000);
+        }
     };
+
+
+    
+
+        // setTimeout(() => {
+        //     setIsScanning(false);
+        //     setScanResult({
+        //         disease: "टमाटर पत्ता",
+        //         confidence: "85%",
+        //         status: "प्रारंभिक छत्रा रोग",
+        //         recommendations: "2 घंटे पहले"
+        //     });
+        // }, 2000);
+    // };
 
     const triggerFileInput = () => {
         fileInputRef.current?.click();
@@ -118,7 +208,7 @@ const ImageScanner = () => {
                     Retake photo
                 </button>
                 <button
-                    onClick={retake}
+                    onClick={() => simulateScan(selectedImage)}
                     className="w-full bg-amber-500 text-white py-3 rounded-xl font-medium mb-4 flex items-center justify-center gap-2 hover:bg-green-700 transition-colors"
                 >
                     send
@@ -132,6 +222,15 @@ const ImageScanner = () => {
                 <Camera className="w-5 h-5" />
                 फोटो लें
             </button>)}
+
+            {/* Loader while scanning */}
+            {isScanning && (
+              <div className="flex items-center justify-center my-4">
+                <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-green-600"></span>
+                <span className="ml-2 text-green-700">स्कैन हो रहा है...</span>
+              </div>
+            )}
+
 
             {/* switch camera */}
 
@@ -184,80 +283,46 @@ const ImageScanner = () => {
 
             {/* Scan Results */}
             <div className="space-y-4">
-                {/* Tomato Scan */}
-                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                                <span className="text-xl">🍅</span>
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-gray-800">टमाटर पत्ता</h3>
-                                <div className="flex items-center space-x-1 text-sm text-green-600">
-                                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                                    <span>प्राथमिक धब्बा रोग</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <span className="text-sm font-medium text-gray-700">85%</span>
-                            <div className="w-10 h-6 bg-orange-400 rounded-full flex items-center justify-center">
-                                <span className="text-xs text-white">🌱</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">
-                                मध्यम
-                            </span>
-                            <div className="flex items-center space-x-1 text-xs text-gray-500">
-                                <Clock className="w-3 h-3" />
-                                <span>2 घंटे पहले</span>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-1 text-blue-600 cursor-pointer">
-                            <ChevronRight className="w-4 h-4" />
-                            <span className="text-sm">सुझाव देखें</span>
-                        </div>
-                    </div>
+               {scanHistory.map((scan, idx) => (
+        <div
+          key={scan.id || idx}
+          className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
+        >
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                <span className="text-xl">🌱</span>
+              </div>
+              <div>
+                <h3 className="font-medium text-gray-800">{scan.response_result.plant_name}</h3>
+                <div className="flex items-center space-x-1 text-sm text-green-600">
+                  <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                  <span>{scan.response_result.disease}</span>
                 </div>
+              </div>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-medium text-gray-700">
+                {scan.response_result.disease_probability}
+              </span>
+              <div className="w-10 h-6 bg-orange-400 rounded-full flex items-center justify-center">
+                <span className="text-xs text-white">🌱</span>
+              </div>
+            </div>
+          </div>
 
-                {/* Rice Scan */}
-                <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-3">
-                        <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
-                                <span className="text-xl">🌾</span>
-                            </div>
-                            <div>
-                                <h3 className="font-medium text-gray-800">चावल का पौधा</h3>
-                                <div className="flex items-center space-x-1 text-sm text-gray-600">
-                                    <span>स्वस्थ - कोई समस्या नहीं</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <span className="text-sm font-medium text-gray-700">92%</span>
-                            <div className="w-10 h-6 bg-orange-400 rounded-full flex items-center justify-center">
-                                <span className="text-xs text-white">🌱</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-2">
-                            <span className="px-3 py-1 bg-green-100 text-green-700 text-xs rounded-full font-medium">
-                                अच्छा
-                            </span>
-                            <div className="flex items-center space-x-1 text-xs text-gray-500">
-                                <Clock className="w-3 h-3" />
-                                <span>1 दिन पहले</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full font-medium">
+                {scan.response_result.severity}
+              </span>
+              <div className="flex items-center space-x-1 text-xs text-gray-500">
+                <span>{timeAgo(scan.detected_at)}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      ))}
             </div>
 
             {/* AI Detection Section */}

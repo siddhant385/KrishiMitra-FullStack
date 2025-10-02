@@ -1,5 +1,10 @@
 import React from 'react'
 import { useState, useEffect, useRef } from "react"; 
+import { useAuth } from "@clerk/clerk-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+
+
 // import { useLocation } from "react-router-dom";
 import { Bot, User, Volume2, Copy } from "lucide-react"; 
 // import Navbar from "./Navbar"; 
@@ -10,9 +15,13 @@ import { Bot, User, Volume2, Copy } from "lucide-react";
 // import Profile from "./Profile";
 import { useLanguage } from "@/contexts/LanguageContext";
 import AppContent from './AppContent';
+import { chat } from "../../api/chatbot"
+
 
 
 const Chatbot = () => {
+  const { getToken } = useAuth();
+
 //   const location = useLocation();
     const { language } = useLanguage();
     console.log(language);
@@ -57,12 +66,15 @@ const Chatbot = () => {
     } 
   }
  
-  function handleSend(message) {
+  async function handleSend(message) {
     const userMessage = { text: message, sender: "user", timestamp: new Date() }; 
     setMessages((prev) => [...prev, userMessage]);
+    const token = await getToken();
+    const response = await chat(token,message)
+    console.log(response)
     setTimeout(() => { 
       const botMessage = { 
-        text: generateBotResponse(message), 
+        text: response.reply, 
         sender: "bot", 
         timestamp: new Date(),
       }; 
@@ -137,7 +149,10 @@ const Chatbot = () => {
                           : "bg-white text-gray-800 rounded-bl-none"
                       }`}
                     >
-                      <p>{msg.text}</p>
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {msg.text}
+                      </ReactMarkdown>
+
                       <p className={`text-xs mt-1 ${
                         msg.sender === "user" ? "text-blue-100" : "text-gray-500"
                       }`}>
