@@ -16,6 +16,7 @@ import Chatbot from './components/Chatbot/Chatbot'
 import AccessDenied from './components/AccessDenied/AccessDenied'
 import { LanguageProvider } from "./contexts/LanguageContext";
 import Test from './components/Test/Test'
+import Profile from './components/Profile/Profile'
 import FarmerErrorPage from './components/Error404/Error404'
 
 
@@ -54,6 +55,7 @@ const router = createBrowserRouter(
         <Route path="/trade" element={<Trade />} />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/camera" element={<ImageScanner />} />
+        <Route path="/profile" element={<Profile />} />
       </Route>
     </Route>
   )
