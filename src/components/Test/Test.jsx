@@ -1,26 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { supabasePublic } from '@/utils/supabase';
-
+import { useAuth } from '@clerk/clerk-react';
 const Test = () => {
   const [crops, setCrops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { getToken } = useAuth();
 
   useEffect(() => {
     const fetchCrops = async () => {
+      const token = await getToken();
+      console.log(token);
       setLoading(true);
-      const { data, error } = await supabasePublic
-        .from('crops')
-        .select('*')
-        .order('market_price', { ascending: false }) // optional sorting
+      try {
+        const response = await fetch("http://127.0.0.1:8000/api/v1/chatbot/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
+          body: JSON.stringify({ message: "Hello from React!" })
+        });
 
-      if (error) {
-        setError(error.message);
-      } else {
-        setCrops(data);
+        const data = await response.json();
+        console.log("Backend response:", data);
+      } catch (err) {
+        console.error("Error:", err);
       }
-      setLoading(false);
-    };
+
+      };
 
     fetchCrops();
   }, []);
