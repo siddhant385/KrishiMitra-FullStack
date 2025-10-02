@@ -51,7 +51,7 @@ const Profile = () => {
   return (
     <div className="pm-page">
       {/* Header */}
-      <div className="pm-card pm-header">
+      <div className="pm-card pm-header mt-13">
         <div className="pm-header-left">
           <div className="pm-avatar-placeholder">
             <div className="pm-avatar-circle">{profile.name.split(" ")[0]?.[0] || "U"}</div>
@@ -163,7 +163,7 @@ const Profile = () => {
         <div className="pm-menu-row"><div className="menu-left"><Info size={16} className="icon-inline" /> <span>ऐप के बारे में</span></div><div>›</div></div>
       </div>
 
-      <div className="pm-footer">
+      <div className="pm-footer mb-16">
         <div>स्मार्टफार्म - कृषि सलाहकार ऐप</div>
         <div>संस्करण 1.0.0 | बनाया गया भारत में 🇮🇳</div>
         <div>© 2024 सभी अधिकार सुरक्षित</div>

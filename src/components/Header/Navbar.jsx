@@ -28,9 +28,9 @@ const Navbar = ({  }) => {
         </div>
       </div>
 
-      <div className="flex flex-row gap-3 sm:gap-4 items-center relative">
+      <div className="flex flex-row gap-3 sm:gap-5 items-center relative">
         <Globe className="w-5 h-5 sm:w-6 sm:h-6" onClick={() => languageMenu?setLanguageMenu(false):setLanguageMenu(true)}/>
-            <div className="flex items-center justify-center py-8 px-4">
+        <div className="flex items-center justify-center py-8 ">
         <SignedOut>
           <SignInButton />
         </SignedOut>

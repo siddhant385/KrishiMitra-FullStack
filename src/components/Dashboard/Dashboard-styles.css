@@ -618,6 +618,7 @@
   }
 
   .weather-card {
+    
       background-color: #E3F2FD;
       border-radius: 12px;
       padding: 20px;
@@ -630,6 +631,7 @@
   @media (min-width: 768px) {
       .weather-card {
           padding: 24px;
+          
       }
 
       .weather-temp {
