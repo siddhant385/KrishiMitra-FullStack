@@ -124,6 +124,11 @@ const ImageScanner = () => {
             const token = await getToken()
             const response = {response_result: await detectImage(file,token),detected_at: new Date()};
             console.log("Scan result:", response);
+            if (response.response_result.status_code === 404){
+                alert(response.response_result.detail)
+                setIsScanning(false)
+                return 
+            }
             setScanResult(response.response_result);
             setImgSrc(null);
             setSelectedImage(null);
