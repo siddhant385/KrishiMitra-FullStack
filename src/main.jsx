@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { Toaster } from "@/components/ui/sonner"
 import './index.css'
 // import App from './App.jsx'
 
@@ -66,6 +67,7 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
     <ClerkProvider localization={hiIN} publishableKey={PUBLISHABLE_KEY}>
       <LanguageProvider>
+        <Toaster richColors position="top-center" />
         <RouterProvider router={router} />
       </LanguageProvider>
     </ClerkProvider>

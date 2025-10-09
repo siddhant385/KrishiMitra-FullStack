@@ -7,6 +7,7 @@ function Layout() {
 	return (
 		<>
 		<Header/>
+		
 		<Outlet />
 		<div className='bottom-0 text-black'>
 			

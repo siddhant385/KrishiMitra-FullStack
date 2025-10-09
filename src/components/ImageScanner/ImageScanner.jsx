@@ -4,6 +4,8 @@ import React, { useRef, useState, useCallback,useEffect } from 'react';
 import Webcam from 'react-webcam';
 import { useAuth } from "@clerk/clerk-react";
 import { detectImage,getHistory } from "../../api/image"
+import { toast } from "sonner"
+
 
 const ImageScanner = () => {
 
@@ -124,11 +126,6 @@ const ImageScanner = () => {
             const token = await getToken()
             const response = {response_result: await detectImage(file,token),detected_at: new Date()};
             console.log("Scan result:", response);
-            if (response.response_result.status_code === 404){
-                alert(response.response_result.detail)
-                setIsScanning(false)
-                return 
-            }
             setScanResult(response.response_result);
             setImgSrc(null);
             setSelectedImage(null);
@@ -140,6 +137,8 @@ const ImageScanner = () => {
           ]);
 
         } catch (error) {
+            toast.error(error.response.data.detail)
+
             console.error("Error during scan:", error);
             console.error("Error status:", error.response.status);
             console.error("Error detail:", error.response.data.detail);
@@ -235,6 +234,10 @@ const ImageScanner = () => {
                 <span className="ml-2 text-green-700">स्कैन हो रहा है...</span>
               </div>
             )}
+
+            {
+
+            }
 
 
             {/* switch camera */}
